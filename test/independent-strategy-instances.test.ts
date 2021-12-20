@@ -2,6 +2,7 @@
 import { getConfiguredTestServer, getRegisteredTestServer, TestStrategy } from './helpers'
 import { Strategy } from '../src/strategies'
 import { TestThirdPartyStrategy } from './authorize.test'
+import { FastifyRequest } from 'fastify';
 
 class WelcomeStrategy extends Strategy {
   authenticate(request: any, _options?: { pauseStream?: boolean }) {
@@ -15,6 +16,8 @@ class WelcomeStrategy extends Strategy {
   }
 }
 
+// export interface UserDocument extends Document {   email: string }
+
 test(`should allow passing a specific Strategy instance to an authenticate call`, async () => {
   const { server, fastifyPassport } = getRegisteredTestServer()
   server.get(
@@ -22,7 +25,7 @@ test(`should allow passing a specific Strategy instance to an authenticate call`
     {
       preValidation: fastifyPassport.authenticate(new WelcomeStrategy('welcome'), { authInfo: false }),
     },
-    async (request) => request.session.get('messages')
+    async (request: FastifyRequest) => request.session.get('messages')
   )
   server.post(
     '/login',
@@ -65,7 +68,7 @@ test(`should allow passing a multiple specific Strategy instances to an authenti
         authInfo: false,
       }),
     },
-    async (request) => `messages: ${request.session.get('messages')}`
+    async (request: FastifyRequest) => `messages: ${request.session.get('messages')}`
   )
   server.post(
     '/login',
@@ -108,7 +111,7 @@ test(`should allow passing a mix of Strategy instances and strategy names`, asyn
         authInfo: false,
       }),
     },
-    async (request) => `messages: ${request.session.get('messages')}`
+    async (request: FastifyRequest) => `messages: ${request.session.get('messages')}`
   )
   server.post(
     '/login',
