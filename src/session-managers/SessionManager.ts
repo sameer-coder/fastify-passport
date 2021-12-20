@@ -1,9 +1,8 @@
-/// <reference types="fastify-secure-session" />
 import { FastifyRequest } from 'fastify'
 import { SerializeFunction, SessionManagement } from '../Authenticator'
 
-/** Class for storing passport data in the session using `fastify-secure-session` */
-export class SecureSessionManager implements SessionManagement {
+/** Class for storing passport data in the session using `@fastify/session` */
+export class SessionManager implements SessionManagement {
   key: string
   serializeUser: SerializeFunction
 
@@ -20,14 +19,14 @@ export class SecureSessionManager implements SessionManagement {
 
   async logIn(request: FastifyRequest, user: any) {
     const object = await this.serializeUser(user, request)
-    request.session.set(this.key, object)
+    request.session[this.key] = object
   }
 
   async logOut(request: FastifyRequest) {
-    request.session.set(this.key, undefined)
+    request.session[this.key] = undefined
   }
 
   getUserFromSession(request: FastifyRequest) {
-    return request.session.get(this.key)
+    return request.session[this.key]
   }
 }

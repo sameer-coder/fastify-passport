@@ -2,6 +2,8 @@
 import { getConfiguredTestServer, getRegisteredTestServer, TestStrategy } from './helpers'
 import { Strategy } from '../src/strategies'
 import { TestThirdPartyStrategy } from './authorize.test'
+// import { FastifyRequest } from 'fastify/types/request'
+// import { Session } from 'fastify-secure-session'
 
 class WelcomeStrategy extends Strategy {
   authenticate(request: any, _options?: { pauseStream?: boolean }) {
@@ -22,7 +24,9 @@ test(`should allow passing a specific Strategy instance to an authenticate call`
     {
       preValidation: fastifyPassport.authenticate(new WelcomeStrategy('welcome'), { authInfo: false }),
     },
-    async (request) => request.session.get('messages')
+    async (request) => {
+      request.session['messages']
+    }
   )
   server.post(
     '/login',
@@ -65,7 +69,7 @@ test(`should allow passing a multiple specific Strategy instances to an authenti
         authInfo: false,
       }),
     },
-    async (request) => `messages: ${request.session.get('messages')}`
+    async (request) => `messages: ${request.session['messages']}`
   )
   server.post(
     '/login',
@@ -108,7 +112,7 @@ test(`should allow passing a mix of Strategy instances and strategy names`, asyn
         authInfo: false,
       }),
     },
-    async (request) => `messages: ${request.session.get('messages')}`
+    async (request) => `messages: ${request.session['messages']}`
   )
   server.post(
     '/login',
