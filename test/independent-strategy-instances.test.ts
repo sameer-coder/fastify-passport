@@ -16,6 +16,17 @@ class WelcomeStrategy extends Strategy {
   }
 }
 
+interface Request extends FastifyRequest {
+  session: {
+    get(key: string): any
+    set(key: string, value: string): void
+    changed: boolean
+    deleted: boolean
+    delete(): void
+    options(opts: any): void
+  }
+}
+
 test(`should allow passing a specific Strategy instance to an authenticate call`, async () => {
   const { server, fastifyPassport } = getRegisteredTestServer()
   server.get(
@@ -23,7 +34,11 @@ test(`should allow passing a specific Strategy instance to an authenticate call`
     {
       preValidation: fastifyPassport.authenticate(new WelcomeStrategy('welcome'), { authInfo: false }),
     },
-    async (request: FastifyRequest) => request.session.get('messages')
+    async (request: Request) => {
+      console.log(request.session)
+      console.log(request.session.get)
+      request.session.get('messages')
+    }
   )
   server.post(
     '/login',
@@ -66,7 +81,7 @@ test(`should allow passing a multiple specific Strategy instances to an authenti
         authInfo: false,
       }),
     },
-    async (request: FastifyRequest) => `messages: ${request.session.get('messages')}`
+    async (request: Request) => `messages: ${request.session.get('messages')}`
   )
   server.post(
     '/login',
@@ -109,7 +124,7 @@ test(`should allow passing a mix of Strategy instances and strategy names`, asyn
         authInfo: false,
       }),
     },
-    async (request: FastifyRequest) => `messages: ${request.session.get('messages')}`
+    async (request) => `messages: ${request.session.get('messages')}`
   )
   server.post(
     '/login',
