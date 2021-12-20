@@ -3,6 +3,7 @@ import { getConfiguredTestServer, getRegisteredTestServer, TestStrategy } from '
 import { Strategy } from '../src/strategies'
 import { TestThirdPartyStrategy } from './authorize.test'
 // import { FastifyRequest } from 'fastify/types/request'
+// import { Session } from 'fastify-secure-session'
 
 class WelcomeStrategy extends Strategy {
   authenticate(request: any, _options?: { pauseStream?: boolean }) {
@@ -15,17 +16,6 @@ class WelcomeStrategy extends Strategy {
     this.fail()
   }
 }
-
-// interface Request extends FastifyRequest {
-//   session: {
-//     get(key: string): any
-//     set(key: string, value: string): void
-//     changed: boolean
-//     deleted: boolean
-//     delete(): void
-//     options(opts: any): void
-//   }
-// }
 
 test(`should allow passing a specific Strategy instance to an authenticate call`, async () => {
   const { server, fastifyPassport } = getRegisteredTestServer()
@@ -122,7 +112,7 @@ test(`should allow passing a mix of Strategy instances and strategy names`, asyn
         authInfo: false,
       }),
     },
-    async (request) => `messages: ${request.session.get('messages')}`
+    async (request) => `messages: ${request.session['messages']}`
   )
   server.post(
     '/login',
