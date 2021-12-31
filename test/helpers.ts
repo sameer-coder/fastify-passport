@@ -76,7 +76,7 @@ export class TestBrowserSession {
 
 const loadSessionPlugins = (
   server: FastifyInstance,
-  sessionOptions: FastifyRegisterOptions<SecureSessionPluginOptions> = null
+  sessionOptions: FastifyRegisterOptions<SecureSessionPluginOptions> | null = null
 ) => {
   if (process.env.SESSION_PLUGIN === '@fastify/session') {
     void server.register(fastifyCookie)
