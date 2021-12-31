@@ -8,6 +8,7 @@ import { Strategy } from '../src/strategies'
 import { InjectOptions, Response as LightMyRequestResponse } from 'light-my-request'
 import * as parseCookies from 'set-cookie-parser'
 import { IncomingMessage } from 'http'
+import { FastifyRegisterOptions } from 'fastify/types/register'
 
 const SecretKey = fs.readFileSync(__dirname + '/secure.key')
 
@@ -76,7 +77,7 @@ export class TestBrowserSession {
 const loadSessionPlugins = (server: FastifyInstance, sessionOptions: any = null) => {
   if (process.env.SESSION_PLUGIN === '@fastify/session') {
     void server.register(fastifyCookie)
-    const options = sessionOptions || {
+    const options: FastifyRegisterOptions<any> = sessionOptions || {
       secret: 'a secret with minimum length of 32 characters',
       cookie: { secure: false },
     }
