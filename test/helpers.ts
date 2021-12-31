@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import fastify, { FastifyInstance } from 'fastify'
-import fastifySecureSession from 'fastify-secure-session'
+import fastifySecureSession, { SecureSessionPluginOptions } from 'fastify-secure-session'
 import fastifyCookie from 'fastify-cookie'
 import fastifySession from '@fastify/session'
 import Authenticator from '../src/Authenticator'
@@ -74,7 +74,10 @@ export class TestBrowserSession {
   }
 }
 
-const loadSessionPlugins = (server: FastifyInstance, sessionOptions: any = null) => {
+const loadSessionPlugins = (
+  server: FastifyInstance,
+  sessionOptions: FastifyRegisterOptions<SecureSessionPluginOptions> = null
+) => {
   if (process.env.SESSION_PLUGIN === '@fastify/session') {
     void server.register(fastifyCookie)
     const options: FastifyRegisterOptions<any> = sessionOptions || {
